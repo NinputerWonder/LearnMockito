@@ -229,6 +229,26 @@ public class MockitoTest
         verify(mockedList, times(6)).get(anyInt());
     }
 
+    @Test
+    public void testSpyOnRealObject()
+    {
+        LinkedList<String> list = new LinkedList<>();
+        LinkedList<String> spy = spy(list);
+
+        spy.add("one");
+        spy.add("two");
+        when(spy.size()).thenReturn(100);
+
+        assertEquals("one", spy.get(0));
+        assertEquals("two", spy.get(1));
+
+        assertEquals(100, spy.size());
+
+        // when(spy.get(2)).thenReturn("three"); //use doXXX function, why?
+        doReturn("three").when(spy).get(2);
+        assertEquals("three", spy.get(2));
+    }
+
     private ValidElementInList isValid() {
         return new ValidElementInList();
     }
