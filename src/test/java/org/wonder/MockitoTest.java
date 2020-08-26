@@ -1,8 +1,11 @@
 package org.wonder;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +13,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class MockitoTest
 {
     
@@ -185,6 +189,14 @@ public class MockitoTest
         mockedList.add("second");
         verify(mockedList, times(2)).add(anyString());//because called by first and second
         verifyNoMoreInteractions(mockedList);// that means all interactions are verified
+    }
+
+    @Mock List shortHandCreationMockedList;  //must be declared as a field
+    @Test
+    public void testShortHandCreationForMocks()
+    {
+        shortHandCreationMockedList.add("element");
+        verify(shortHandCreationMockedList).add(anyString());
     }
 
     private ValidElementInList isValid() {
