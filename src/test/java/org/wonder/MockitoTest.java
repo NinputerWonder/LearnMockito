@@ -90,6 +90,33 @@ public class MockitoTest
         verify(mockedList).add(anyInt(), eq("new element"));
     }
 
+    @Test
+    public void testVerifyExactNumberOfInvocation()
+    {
+        List mockedList = mock(List.class);
+        mockedList.add("once");
+
+        mockedList.add("twice");
+        mockedList.add("twice");
+
+        mockedList.add("three times");
+        mockedList.add("three times");
+        mockedList.add("three times");
+
+        verify(mockedList).add("once"); //equal to: verify(mockedList, times(1)).add("once");
+        verify(mockedList, times(1)).add("once");
+        verify(mockedList, times(2)).add("twice");
+        verify(mockedList, times(3)).add("three times");
+        verify(mockedList, times(6)).add(anyString());
+
+        verify(mockedList, never()).add("never happened");
+
+        verify(mockedList, atMost(1)).add("once");
+        verify(mockedList, atLeastOnce()).add("twice");
+        verify(mockedList, atLeast(2)).add("three times");
+        verify(mockedList, atMost(100)).add("three times");
+    }
+
     private ValidElementInList isValid() {
         return new ValidElementInList();
     }
