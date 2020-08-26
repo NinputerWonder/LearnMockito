@@ -263,6 +263,19 @@ public class MockitoTest
         assertEquals(30, argument.getValue().getAge());
     }
 
+    @Test
+    public void testRealPartialMock()
+    {
+        final Person mockedPerson = mock(Person.class);
+        when(mockedPerson.getName()).thenReturn("Wonder");
+        when(mockedPerson.getAge()).thenReturn(30);
+        when(mockedPerson.toString()).thenCallRealMethod();//when to use it???
+
+        assertEquals("Wonder", mockedPerson.getName());
+        assertEquals(30, mockedPerson.getAge());
+        assertEquals("Person{name='null', age=0}", mockedPerson.toString());
+    }
+
     private ValidElementInList isValid() {
         return new ValidElementInList();
     }
@@ -292,6 +305,14 @@ public class MockitoTest
 
         public int getAge() {
             return age;
+        }
+
+        @Override
+        public String toString() {
+            return "Person{" +
+                    "name='" + name + '\'' +
+                    ", age=" + age +
+                    '}';
         }
     }
 }
