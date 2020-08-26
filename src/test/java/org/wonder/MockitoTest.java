@@ -2,6 +2,7 @@ package org.wonder;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 import org.mockito.InOrder;
 import org.mockito.Mock;
@@ -249,6 +250,19 @@ public class MockitoTest
         assertEquals("three", spy.get(2));
     }
 
+    @Test
+    public void testCaptureArguments()
+    {
+        ArgumentCaptor<Person> argument = ArgumentCaptor.forClass(Person.class);
+        List mockedList = mock(List.class);
+
+        mockedList.add(new Person("Wonder", 30));
+
+        verify(mockedList).add(argument.capture());
+        assertEquals("Wonder", argument.getValue().getName());
+        assertEquals(30, argument.getValue().getAge());
+    }
+
     private ValidElementInList isValid() {
         return new ValidElementInList();
     }
@@ -260,6 +274,24 @@ public class MockitoTest
         }
         public String toString() {
             return "Only contains wonder";
+        }
+    }
+
+    class Person{
+        private final String name;
+        private final int age;
+
+        Person(String name , int age) {
+            this.name = name;
+            this.age = age;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getAge() {
+            return age;
         }
     }
 }
