@@ -170,6 +170,23 @@ public class MockitoTest
         verifyZeroInteractions(secondMock);
     }
 
+    @Test
+    public void testNoMoreInteractionsOnMock()
+    {
+        List mockedList = mock(List.class);
+
+        mockedList.add("first");
+        mockedList.clear();
+
+        verify(mockedList).add("first");
+        verify(mockedList).clear();
+        verifyNoMoreInteractions(mockedList);
+
+        mockedList.add("second");
+        verify(mockedList, times(2)).add(anyString());//because called by first and second
+        verifyNoMoreInteractions(mockedList);// that means all interactions are verified
+    }
+
     private ValidElementInList isValid() {
         return new ValidElementInList();
     }
