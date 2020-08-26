@@ -199,6 +199,36 @@ public class MockitoTest
         verify(shortHandCreationMockedList).add(anyString());
     }
 
+    @Test
+    public void testStubbingConsecutiveCalls()
+    {
+        List mockedList = mock(List.class);
+        when(mockedList.get(0))
+                .thenReturn("0 first")
+                .thenThrow(new RuntimeException("mocked exception"))
+                .thenReturn("0 third");
+
+        when(mockedList.get(1))
+                .thenReturn("1 first", "1 second", "1 third");
+
+        assertEquals("0 first", mockedList.get(0));
+
+        try {
+            mockedList.get(0);
+        } catch (RuntimeException ex){
+            assertEquals("mocked exception", ex.getMessage());
+        }
+
+        assertEquals("0 third", mockedList.get(0));
+        verify(mockedList, times(3)).get(0);
+
+        assertEquals("1 first", mockedList.get(1));
+        assertEquals("1 second", mockedList.get(1));
+        assertEquals("1 third", mockedList.get(1));
+
+        verify(mockedList, times(6)).get(anyInt());
+    }
+
     private ValidElementInList isValid() {
         return new ValidElementInList();
     }
