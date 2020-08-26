@@ -156,9 +156,18 @@ public class MockitoTest
         //the following verifications can not be exchanged. but if there's only the second, it's passed
         inOrder2.verify(firstMock).add("was called first");
         inOrder2.verify(secondMock).add("was called second");
+    }
 
+    @Test
+    public void testNoInteractionOnMock()
+    {
+        List firstMock = mock(List.class);
+        List secondMock = mock(List.class);
 
+        firstMock.add("element");
 
+        verify(firstMock).add("element");
+        verifyZeroInteractions(secondMock);
     }
 
     private ValidElementInList isValid() {
