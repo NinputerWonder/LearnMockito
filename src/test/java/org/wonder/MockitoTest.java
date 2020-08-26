@@ -117,6 +117,22 @@ public class MockitoTest
         verify(mockedList, atMost(100)).add("three times");
     }
 
+    @Test
+    public void testExceptionWhenMethodRetunsVoid()
+    {
+        List mockedList = mock(List.class);
+        // when(mockedList.clear()).thenThrow(new RuntimeException("test")); //'void' type not allowed here
+        doThrow(new RuntimeException("mocked exception")).when(mockedList).clear();
+
+        try {
+            mockedList.clear();
+        } catch (RuntimeException ex){
+            assertEquals("mocked exception", ex.getMessage());
+        } finally {
+            verify(mockedList).clear();
+        }
+    }
+
     private ValidElementInList isValid() {
         return new ValidElementInList();
     }
