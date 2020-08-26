@@ -1,11 +1,12 @@
 package org.wonder;
 
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class MockitoTest
@@ -65,5 +66,41 @@ public class MockitoTest
 
         //the none stubbed value is default
         assertEquals(null, mockedList.get(999));
+    }
+
+    @Test
+    public void testArgumentsByStub()
+    {
+        LinkedList mockedList = mock(LinkedList.class);
+        //stubbing using built-in anyInt() argument matcher
+        when(mockedList.get(anyInt())).thenReturn("element");
+        //stubbing using custom matcher (let's say isValid() returns your own matcher implementation):
+        when(mockedList.contains(argThat(isValid()))).thenReturn(true);
+
+        assertEquals("element", mockedList.get(999));
+        verify(mockedList).get(999);
+        verify(mockedList).get(anyInt());
+
+        assertEquals("element", mockedList.get(anyInt()));
+
+        assertTrue(mockedList.contains("wonder"));
+        assertFalse(mockedList.contains("element"));
+
+        mockedList.add(123, "new element");
+        verify(mockedList).add(anyInt(), eq("new element"));
+    }
+
+    private ValidElementInList isValid() {
+        return new ValidElementInList();
+    }
+
+    class ValidElementInList extends ArgumentMatcher<List> {
+        @Override
+        public boolean matches(Object object) {
+            return object.equals("wonder");
+        }
+        public String toString() {
+            return "Only contains wonder";
+        }
     }
 }
