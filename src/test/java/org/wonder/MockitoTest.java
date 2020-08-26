@@ -276,6 +276,18 @@ public class MockitoTest
         assertEquals("Person{name='null', age=0}", mockedPerson.toString());
     }
 
+    @Test
+    public void testResettingMock()
+    {
+        final List mockedClass = mock(List.class);
+        when(mockedClass.size()).thenReturn(10);
+
+        assertEquals(10, mockedClass.size());
+
+        reset(mockedClass);
+        assertEquals(0, mockedClass.size());
+    }
+
     private ValidElementInList isValid() {
         return new ValidElementInList();
     }
