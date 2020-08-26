@@ -2,6 +2,7 @@ package org.wonder;
 
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
+import org.mockito.InOrder;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -131,6 +132,33 @@ public class MockitoTest
         } finally {
             verify(mockedList).clear();
         }
+    }
+
+    @Test
+    public void testVerificationInOrder()
+    {
+        List singleMock = mock(List.class);
+        singleMock.add("was added first");
+        singleMock.add("was added second");
+
+        InOrder inOrder = inOrder(singleMock);
+        //the following verifications can not be exchanged. but if there's only the second, it's passed
+        inOrder.verify(singleMock).add("was added first");
+        inOrder.verify(singleMock).add("was added second");
+
+        List firstMock = mock(List.class);
+        List secondMock = mock(List.class);
+
+        firstMock.add("was called first");
+        secondMock.add("was called second");
+
+        InOrder inOrder2 = inOrder(firstMock , secondMock);
+        //the following verifications can not be exchanged. but if there's only the second, it's passed
+        inOrder2.verify(firstMock).add("was called first");
+        inOrder2.verify(secondMock).add("was called second");
+
+
+
     }
 
     private ValidElementInList isValid() {
