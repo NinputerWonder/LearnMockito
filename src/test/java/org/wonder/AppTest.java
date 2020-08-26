@@ -1,20 +1,17 @@
 package org.wonder;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
-/**
- * Unit test for simple App.
- */
+import java.util.List;
+
+import static org.mockito.Mockito.mock;
+
 public class AppTest 
 {
-    /**
-     * Rigorous Test :-)
-     */
     @Test
     public void shouldAnswerWithTrue()
     {
-        assertTrue( true );
+        //mock creation
+        List mockedList = mock(List.class);
     }
 }
