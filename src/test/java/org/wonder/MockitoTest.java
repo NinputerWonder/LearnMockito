@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -279,13 +281,29 @@ public class MockitoTest
     @Test
     public void testResettingMock()
     {
-        final List mockedClass = mock(List.class);
-        when(mockedClass.size()).thenReturn(10);
+        final List mockedList = mock(List.class);
+        when(mockedList.size()).thenReturn(10);
 
-        assertEquals(10, mockedClass.size());
+        assertEquals(10, mockedList.size());
 
-        reset(mockedClass);
-        assertEquals(0, mockedClass.size());
+        reset(mockedList);
+        assertEquals(0, mockedList.size());
+    }
+
+    @Test
+    public void testBDDStyleVerification()
+    {
+        final List mockedList = mock(List.class);
+        given(mockedList.get(0)).willReturn("first");
+        given(mockedList.size()).willReturn(100);
+
+        assertEquals("first", mockedList.get(0));
+        assertEquals(null, mockedList.get(1));
+        assertEquals(100, mockedList.size());
+        assertEquals(100, mockedList.size());
+
+        then(mockedList).should(times(2)).get(anyInt());
+        then(mockedList).should(times(2)).size();
     }
 
     private ValidElementInList isValid() {
