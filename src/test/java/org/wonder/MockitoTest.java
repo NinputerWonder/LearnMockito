@@ -199,8 +199,7 @@ public class MockitoTest
         verify(shortHandCreationMockedList).add(anyString());
     }
 
-    @Spy
-    LinkedList shortHandCreationSpiedList;  //must be declared as a field
+    @Spy LinkedList shortHandCreationSpiedList;  //must be declared as a field
     @Test
     public void testShortHandCreationForSpy()
     {
@@ -212,6 +211,19 @@ public class MockitoTest
         doReturn(100).when(shortHandCreationSpiedList).size();
         assertEquals(100, shortHandCreationSpiedList.size());
     }
+
+    @Mock Salary lowLevel; //How about there are more than one Salary??
+    @InjectMocks Person xiaoMing; //need default constructor
+    @Test
+    public void testInjectMocks()
+    {
+        xiaoMing.getSalaryReport();
+
+        //lowLevel is used for the field in xiaoMing automatically.
+        verify(lowLevel).getAmount();
+        verify(lowLevel).getCurrency();
+    }
+
 
     @Test
     public void testStubbingConsecutiveCalls()
@@ -269,7 +281,7 @@ public class MockitoTest
         ArgumentCaptor<Person> argument = ArgumentCaptor.forClass(Person.class);
         List mockedList = mock(List.class);
 
-        mockedList.add(new Person("Wonder", 30));
+        mockedList.add(new Person("Wonder", 30, new Salary(10000, "CNY")));
 
         verify(mockedList).add(argument.capture());
         assertEquals("Wonder", argument.getValue().getName());
@@ -330,30 +342,62 @@ public class MockitoTest
             return "Only contains wonder";
         }
     }
+}
 
-    class Person{
-        private final String name;
-        private final int age;
+class Person{
+    private final String name;
+    private final int age;
+    private Salary salary;
 
-        Person(String name , int age) {
-            this.name = name;
-            this.age = age;
-        }
+    Person(){
+        name = null;
+        age = 0;
+        salary = new Salary(0, "USD");
+    }
 
-        public String getName() {
-            return name;
-        }
+    Person(String name ,int age, Salary salary) {
+        this.name = name;
+        this.age = age;
+        this.salary = salary == null ? new Salary(0, "USD") :salary;
+    }
 
-        public int getAge() {
-            return age;
-        }
+    public String getName() {
+        return name;
+    }
 
-        @Override
-        public String toString() {
-            return "Person{" +
-                    "name='" + name + '\'' +
-                    ", age=" + age +
-                    '}';
-        }
+    public int getAge() {
+        return age;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+
+    public String getSalaryReport(){
+        return  salary.getAmount() + salary.getCurrency();
+    }
+}
+
+class Salary
+{
+    private int amount;
+    private String currency;
+
+    public Salary(int amount, String currency)
+    {
+        this.amount = amount;
+        this.currency = currency;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public String getCurrency() {
+        return currency;
     }
 }
