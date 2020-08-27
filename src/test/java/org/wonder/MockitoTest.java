@@ -2,10 +2,7 @@ package org.wonder;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
-import org.mockito.InOrder;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.LinkedList;
@@ -200,6 +197,20 @@ public class MockitoTest
     {
         shortHandCreationMockedList.add("element");
         verify(shortHandCreationMockedList).add(anyString());
+    }
+
+    @Spy
+    LinkedList shortHandCreationSpiedList;  //must be declared as a field
+    @Test
+    public void testShortHandCreationForSpy()
+    {
+        shortHandCreationSpiedList.add("one");
+        shortHandCreationSpiedList.add("two");
+
+        assertEquals(2, shortHandCreationSpiedList.size());
+
+        doReturn(100).when(shortHandCreationSpiedList).size();
+        assertEquals(100, shortHandCreationSpiedList.size());
     }
 
     @Test
