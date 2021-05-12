@@ -207,6 +207,8 @@ public class MockitoTest
         shortHandCreationSpiedList.add("two");
 
         assertEquals(2, shortHandCreationSpiedList.size());
+        assertEquals("one", shortHandCreationSpiedList.get(0));
+        assertEquals("two", shortHandCreationSpiedList.get(1));
 
         doReturn(100).when(shortHandCreationSpiedList).size();
         assertEquals(100, shortHandCreationSpiedList.size());
@@ -222,6 +224,10 @@ public class MockitoTest
         //lowLevel is used for the field in xiaoMing automatically.
         verify(lowLevel).getAmount();
         verify(lowLevel).getCurrency();
+
+        doReturn(10086).when(lowLevel).getAmount();
+        doReturn("CNY").when(lowLevel).getCurrency();
+        assertEquals("10086CNY", xiaoMing.getSalaryReport());
     }
 
 
