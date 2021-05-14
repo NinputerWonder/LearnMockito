@@ -1,13 +1,13 @@
 package org.injection;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class EmployeeSalary {
-    private final Date effectiveDate;
+    private final LocalDate effectiveDate;
     private final int employeeId;
     private final int amount;
 
-    EmployeeSalary(Date effectiveDate, int employeeId, int amount) {
+    EmployeeSalary(LocalDate effectiveDate, int employeeId, int amount) {
         this.effectiveDate = effectiveDate;
         this.employeeId = employeeId;
         this.amount = amount;
@@ -17,7 +17,7 @@ public class EmployeeSalary {
         return employeeId;
     }
 
-    public Date getEffectiveDate() {
+    public LocalDate getEffectiveDate() {
         return effectiveDate;
     }
 

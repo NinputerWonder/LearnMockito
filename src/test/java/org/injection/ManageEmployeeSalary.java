@@ -1,6 +1,6 @@
 package org.injection;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,7 +16,7 @@ public class ManageEmployeeSalary {
 
     EmployeeSalaryRaisingList raiseSalary() {
         List<Employee> activeEmployees = employeeService.findActiveEmployees();
-        Date date = new Date(2022, 1, 1);
+        LocalDate date = LocalDate.parse("2021-01-01");
         List<EmployeeSalary> employeeSalaries = employeeSalaryService.tryToRaiseSalaryUntil(activeEmployees, date);
         employeeSalaryService.saveSalaries(employeeSalaries);
         return createEmployeeSalaryRaisingList(employeeSalaries, activeEmployees);
