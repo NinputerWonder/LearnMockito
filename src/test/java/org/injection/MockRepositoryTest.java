@@ -22,25 +22,24 @@ public class MockRepositoryTest {
         EmployeeRepository mockedEmployeeRepository = mock(EmployeeRepository.class);
         EmployeeSalaryRepository mockedEmployeeSalaryRepository = mock(EmployeeSalaryRepository.class);
 
-        when(mockedEmployeeRepository.findAll()).thenReturn(new ArrayList<>(Arrays.asList(
+        when(mockedEmployeeRepository.findAll()).thenReturn(Arrays.asList(
                 new Employee(1, "Bob", true),
                 new Employee(2, "Andy", true)
-        )));
+        ));
 
         when(mockedEmployeeSalaryRepository.findByEmployeeIds(any())).thenReturn(
-                new ArrayList<>(Arrays.asList(
+                Arrays.asList(
                         new EmployeeSalary(LocalDate.parse("2019-02-02"), 1, 10000),
                         new EmployeeSalary(LocalDate.parse("2018-10-09"), 2, 20000)
-                )));
+                ));
 
         EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
         EmployeeSalaryService employeeSalaryService = new EmployeeSalaryService(mockedEmployeeSalaryRepository);
         ManageEmployeeSalary manageEmployeeSalary = new ManageEmployeeSalary(employeeService, employeeSalaryService);
 
-        //when
+
         EmployeeSalaryRaisingList result = manageEmployeeSalary.raiseSalary();
 
-        //then
         assertEquals(2, result.salaryList.size());
 
         Optional<EmployeeSalaryRaising> BobSalary = result.salaryList.stream().filter(s -> s.id == 1).findFirst();
@@ -55,17 +54,16 @@ public class MockRepositoryTest {
         verify(mockedEmployeeSalaryRepository, times(1)).findByEmployeeIds(Arrays.asList(1, 2));
 
         ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
-
         verify(mockedEmployeeSalaryRepository, times(1)).save(argument.capture());
-        List value = argument.getValue();
-        Optional bobSalary = value.stream().filter(v -> ((EmployeeSalary)v).getEmployeeId() == 1).findFirst();
-        assertEquals(11000, ((EmployeeSalary)bobSalary.get()).getAmount());
-        assertEquals("2021-01-01", ((EmployeeSalary)bobSalary.get()).getEffectiveDate().toString());
+        List<EmployeeSalary> employeeSalaries = argument.getValue();
 
-        Optional andySalary = value.stream().filter(v -> ((EmployeeSalary)v).getEmployeeId() == 2).findFirst();
-        assertEquals(22000, ((EmployeeSalary)andySalary.get()).getAmount());
-        assertEquals("2021-01-01", ((EmployeeSalary)andySalary.get()).getEffectiveDate().toString());
+        Optional<EmployeeSalary> bobSalary = employeeSalaries.stream().filter(s -> s.getEmployeeId() == 1).findFirst();
+        assertEquals(11000, bobSalary.get().getAmount());
+        assertEquals("2021-01-01", bobSalary.get().getEffectiveDate().toString());
 
+        Optional<EmployeeSalary> andySalary = employeeSalaries.stream().filter(s -> s.getEmployeeId() == 2).findFirst();
+        assertEquals(22000, andySalary.get().getAmount());
+        assertEquals("2021-01-01", andySalary.get().getEffectiveDate().toString());
     }
 
     @Test
