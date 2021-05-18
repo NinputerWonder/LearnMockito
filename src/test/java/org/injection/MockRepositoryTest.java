@@ -19,51 +19,42 @@ public class MockRepositoryTest {
 
     @Test
     public void should_raise_salary_for_employee_who_engaged_more_than_2_years_and_never_raised_salary(){
-        EmployeeRepository mockedEmployeeRepository = mock(EmployeeRepository.class);
-        EmployeeSalaryRepository mockedEmployeeSalaryRepository = mock(EmployeeSalaryRepository.class);
-
-        when(mockedEmployeeRepository.findAll()).thenReturn(Arrays.asList(
+        EmployeeRepository mockedEmployeeRepository = mockEmployeeRepository(
                 new Employee(1, "Bob", true),
-                new Employee(2, "Andy", true)
-        ));
+                new Employee(2, "Andy", true));
 
-        when(mockedEmployeeSalaryRepository.findByEmployeeIds(any())).thenReturn(
-                Arrays.asList(
-                        new EmployeeSalary(LocalDate.parse("2019-02-02"), 1, 10000),
-                        new EmployeeSalary(LocalDate.parse("2018-10-09"), 2, 20000)
-                ));
+        EmployeeSalaryRepository mockedEmployeeSalaryRepository = mockEmployeeSalaryRepository(
+                new EmployeeSalary(LocalDate.parse("2019-02-02"), 1, 10000),
+                new EmployeeSalary(LocalDate.parse("2018-10-09"), 2, 20000));
 
-        EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
-        EmployeeSalaryService employeeSalaryService = new EmployeeSalaryService(mockedEmployeeSalaryRepository);
-        ManageEmployeeSalary manageEmployeeSalary = new ManageEmployeeSalary(employeeService, employeeSalaryService);
-
+        ManageEmployeeSalary manageEmployeeSalary = createManageEmployeeSalary(mockedEmployeeRepository, mockedEmployeeSalaryRepository);
 
         EmployeeSalaryRaisingList result = manageEmployeeSalary.raiseSalary();
 
         assertEquals(2, result.salaryList.size());
 
-        Optional<EmployeeSalaryRaising> BobSalary = result.salaryList.stream().filter(s -> s.id == 1).findFirst();
-        assertEquals("Bob", BobSalary.get().name);
-        assertEquals(11000, BobSalary.get().currentSalary);
+        EmployeeSalaryRaising BobSalaryRaising = result.salaryList.stream().filter(s1 -> s1.id == 1).findFirst().get();
+        assertEquals("Bob", BobSalaryRaising.name);
+        assertEquals(11000, BobSalaryRaising.currentSalary);
 
-        Optional<EmployeeSalaryRaising> AndySalary = result.salaryList.stream().filter(s -> s.id == 2).findFirst();
-        assertEquals("Andy", AndySalary.get().name);
-        assertEquals(22000, AndySalary.get().currentSalary);
+        EmployeeSalaryRaising AndySalaryRaising = result.salaryList.stream().filter(s1 -> s1.id == 2).findFirst().get();
+        assertEquals("Andy", AndySalaryRaising.name);
+        assertEquals(22000, AndySalaryRaising.currentSalary);
 
         verify(mockedEmployeeRepository, times(1)).findAll();
         verify(mockedEmployeeSalaryRepository, times(1)).findByEmployeeIds(Arrays.asList(1, 2));
 
-        ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
-        verify(mockedEmployeeSalaryRepository, times(1)).save(argument.capture());
-        List<EmployeeSalary> employeeSalaries = argument.getValue();
+        ArgumentCaptor<List> argumentCaptor = ArgumentCaptor.forClass(List.class);
+        verify(mockedEmployeeSalaryRepository, times(1)).save(argumentCaptor.capture());
+        List<EmployeeSalary> employeeSalaries = argumentCaptor.getValue();
 
-        Optional<EmployeeSalary> bobSalary = employeeSalaries.stream().filter(s -> s.getEmployeeId() == 1).findFirst();
-        assertEquals(11000, bobSalary.get().getAmount());
-        assertEquals("2021-01-01", bobSalary.get().getEffectiveDate().toString());
+        EmployeeSalary BobSalary = employeeSalaries.stream().filter(s1 -> s1.getEmployeeId() == 1).findFirst().get();
+        assertEquals(11000, BobSalary.getAmount());
+        assertEquals("2021-01-01", BobSalary.getEffectiveDate().toString());
 
-        Optional<EmployeeSalary> andySalary = employeeSalaries.stream().filter(s -> s.getEmployeeId() == 2).findFirst();
-        assertEquals(22000, andySalary.get().getAmount());
-        assertEquals("2021-01-01", andySalary.get().getEffectiveDate().toString());
+        EmployeeSalary AndySalary = employeeSalaries.stream().filter(s -> s.getEmployeeId() == 2).findFirst().get();
+        assertEquals(22000, AndySalary.getAmount());
+        assertEquals("2021-01-01", AndySalary.getEffectiveDate().toString());
     }
 
     @Test
@@ -82,9 +73,7 @@ public class MockRepositoryTest {
                         new EmployeeSalary(LocalDate.parse("2020-02-02"), 2, 20000)
                 )));
 
-        EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
-        EmployeeSalaryService employeeSalaryService = new EmployeeSalaryService(mockedEmployeeSalaryRepository);
-        ManageEmployeeSalary manageEmployeeSalary = new ManageEmployeeSalary(employeeService, employeeSalaryService);
+        ManageEmployeeSalary manageEmployeeSalary = createManageEmployeeSalary(mockedEmployeeRepository, mockedEmployeeSalaryRepository);
 
         EmployeeSalaryRaisingList result = manageEmployeeSalary.raiseSalary();
 
@@ -111,9 +100,7 @@ public class MockRepositoryTest {
                         new EmployeeSalary(LocalDate.parse("2017-02-02"), 2, 10000)
                 )));
 
-        EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
-        EmployeeSalaryService employeeSalaryService = new EmployeeSalaryService(mockedEmployeeSalaryRepository);
-        ManageEmployeeSalary manageEmployeeSalary = new ManageEmployeeSalary(employeeService, employeeSalaryService);
+        ManageEmployeeSalary manageEmployeeSalary = createManageEmployeeSalary(mockedEmployeeRepository, mockedEmployeeSalaryRepository);
 
         EmployeeSalaryRaisingList result = manageEmployeeSalary.raiseSalary();
 
@@ -138,9 +125,7 @@ public class MockRepositoryTest {
                         new EmployeeSalary(LocalDate.parse("2019-02-02"), 1, 10000)
                 )));
 
-        EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
-        EmployeeSalaryService employeeSalaryService = new EmployeeSalaryService(mockedEmployeeSalaryRepository);
-        ManageEmployeeSalary manageEmployeeSalary = new ManageEmployeeSalary(employeeService, employeeSalaryService);
+        ManageEmployeeSalary manageEmployeeSalary = createManageEmployeeSalary(mockedEmployeeRepository, mockedEmployeeSalaryRepository);
 
         EmployeeSalaryRaisingList result = manageEmployeeSalary.raiseSalary();
 
@@ -148,6 +133,25 @@ public class MockRepositoryTest {
 
         Optional<EmployeeSalaryRaising> BobSalary = result.salaryList.stream().filter(s -> s.id == 1).findFirst();
         assertEquals(11000, BobSalary.get().currentSalary);
+    }
+
+    private ManageEmployeeSalary createManageEmployeeSalary(EmployeeRepository mockedEmployeeRepository, EmployeeSalaryRepository mockedEmployeeSalaryRepository) {
+        EmployeeService employeeService = new EmployeeService(mockedEmployeeRepository);
+        EmployeeSalaryService employeeSalaryService = new EmployeeSalaryService(mockedEmployeeSalaryRepository);
+        return new ManageEmployeeSalary(employeeService, employeeSalaryService);
+    }
+
+    private EmployeeSalaryRepository mockEmployeeSalaryRepository(EmployeeSalary... employeeSalaries) {
+        EmployeeSalaryRepository mockedEmployeeSalaryRepository = mock(EmployeeSalaryRepository.class);
+        when(mockedEmployeeSalaryRepository.findByEmployeeIds(any())).thenReturn(
+                Arrays.asList(employeeSalaries));
+        return mockedEmployeeSalaryRepository;
+    }
+
+    private EmployeeRepository mockEmployeeRepository(Employee... employees) {
+        EmployeeRepository mockedEmployeeRepository = mock(EmployeeRepository.class);
+        when(mockedEmployeeRepository.findAll()).thenReturn(Arrays.asList(employees));
+        return mockedEmployeeRepository;
     }
 }
 
