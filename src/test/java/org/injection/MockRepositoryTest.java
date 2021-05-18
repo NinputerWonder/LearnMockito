@@ -15,7 +15,7 @@ import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InjectionTest {
+public class MockRepositoryTest {
 
     @Test
     public void should_raise_salary_for_employee_who_engaged_more_than_2_years_and_never_raised_salary(){
