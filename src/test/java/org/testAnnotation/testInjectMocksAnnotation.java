@@ -1,4 +1,4 @@
-package org.wonder;
+package org.testAnnotation;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -150,38 +150,3 @@ class InjectMocksByField {
 
 }
 
-class MyApplicationService
-{
-    private MyDomainService1 myDomainService1;
-    private MyDomainService2 myDomainService2;
-
-
-}
-
-class MyDomainService1
-{
-
-}
-
-class MyDomainService2
-{
-
-}
-
-class MyEntity1
-{
-    public Integer getNumber() {
-        return number;
-    }
-
-    private Integer number;
-
-    public MyEntity1(Integer number) {
-        this.number = number;
-    }
-}
-
-class MyEntity2
-{
-
-}
