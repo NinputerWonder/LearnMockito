@@ -1,4 +1,4 @@
-package org.injection;
+package org.example;
 
 import java.util.List;
 import java.util.stream.Collectors;

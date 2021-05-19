@@ -1,4 +1,4 @@
-package org.injection;
+package org.example;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

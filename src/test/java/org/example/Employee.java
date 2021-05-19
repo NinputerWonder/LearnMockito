@@ -1,4 +1,4 @@
-package org.injection;
+package org.example;
 
 public class Employee {
     private final Integer id;
