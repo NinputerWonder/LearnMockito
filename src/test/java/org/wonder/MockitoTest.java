@@ -335,6 +335,14 @@ public class MockitoTest
         then(mockedList).should(times(2)).size();
     }
 
+    @Test
+    public void testStaticFunc(){
+        DBUrlProvider mock = mock(DBUrlProvider.class);
+        when(mock.getDBUrl()).thenReturn("hello");
+
+        assertEquals("hello", mock.getDBUrl());
+    }
+
     private ValidElementInList isValid() {
         return new ValidElementInList();
     }
@@ -347,6 +355,16 @@ public class MockitoTest
         public String toString() {
             return "Only contains wonder";
         }
+    }
+}
+
+class DBUrlProvider{
+    public static String DBUrl() {
+        return "oracle://wonder";
+    }
+
+    public String getDBUrl() {
+        return DBUrl();
     }
 }
 
